@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PACKAGE=OpenMAMA-omnm
-VERSION=master
+VERSION=nyfix
 REPO=OpenMAMA-omnm
 
 # get cmd line params
