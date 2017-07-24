@@ -2,7 +2,6 @@
 
 PACKAGE=OpenMAMA-omnm
 VERSION=nyfix
-REPO=OpenMAMA-omnm
 
 # get cmd line params
 VERBOSE=""
