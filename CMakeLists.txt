@@ -4,6 +4,15 @@ project (OpenMAMA-omnm)
 # Note path is relative to where it would be executed
 set(DEFAULT_MAMA_SRC ../../OpenMAMA)
 
+# use address sanitizer? (same params for gcc/clang)
+if("$ENV{BUILDW_ASAN}" EQUAL "1")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -fsanitize-address-use-after-scope")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize-address-use-after-scope")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fsanitize=address -fsanitize-address-use-after-scope")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fsanitize-address-use-after-scope")
+endif()
+
+
 if(UNIX)
     file(GLOB DEFAULT_MAMA_ROOT ../OpenMAMA/openmama_install_*)
     set(DEFAULT_GTEST_ROOT "/usr/local")
