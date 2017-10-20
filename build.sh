@@ -19,9 +19,19 @@ shift $((OPTIND - 1))
 [[ ${BUILD_TYPE} == *san ]] && export CONFIG=clang
 [[ -z ${BUILD_TYPE} ]] && BUILD_TYPE=dev
 
+# debug/release
 CMAKE_BUILD_TYPE="Debug"
 if [[ ${BUILD_TYPE} == "release" ]] ; then
    CMAKE_BUILD_TYPE="RelWithDebInfo"
+fi
+
+# gcc/clang
+if [[ ${CONFIG} == "clang" ]] ; then
+   export CC=`which clang`
+   export CXX=`which clang++`
+else
+   export CC=`which gcc`
+   export CXX=`which g++`
 fi
 
 OPENMAMA_INSTALL=${INSTALL_BASE}/OpenMAMA/${VERSION}/${BUILD_TYPE}
