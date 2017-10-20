@@ -51,7 +51,7 @@
 #define        FIELD_TYPE_WIDTH        1
 #define        FID_WIDTH               2
 #define        LENGTH_WIDTH            4
-#define        DEFAULT_PAYLOAD_SIZE    200
+#define        DEFAULT_PAYLOAD_SIZE    1024
 #define        MAMA_PAYLOAD_ID_OMNM    'O'
 #define        OMNM_PROTOCOL_VERSION   1
 
