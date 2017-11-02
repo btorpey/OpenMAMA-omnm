@@ -3,6 +3,9 @@
 PACKAGE=OpenMAMA-omnm
 VERSION=nyfix
 
+# Google test, needed for unit tests
+GTEST_ROOT=/build/share/googletest/1.8.0
+
 # get cmd line params
 VERBOSE=""
 INSTALL_BASE=${HOME}/install
@@ -52,6 +55,7 @@ mkdir build
 cd build
 
 cmake  \
+   -DGTEST_ROOT=${GTEST_ROOT} \
    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
    -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
    -DMAMA_SRC=${OPENMAMA_SOURCE} -DMAMA_ROOT=${OPENMAMA_INSTALL} \
