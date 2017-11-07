@@ -199,7 +199,7 @@ TEST_F(OmnmTests, IteratorTest)
     omnmmsgPayload_addI64 (mPayloadBase, NULL, fid1, expected1);
     omnmmsgPayload_addI64 (mPayloadBase, NULL, fid2, expected2);
     omnmmsgPayload_addString (mPayloadBase, NULL, fid3, expected3);
-    omnmmsgPayload_addOpaque (mPayloadBase, name4, fid4, expected4, strlen(expected4));
+    omnmmsgPayload_addOpaque (mPayloadBase, name4, fid4, expected4, strlen(expected4)+1);
 
     omnmmsgPayloadIterImpl_init (&iter, (OmnmPayloadImpl*)mPayloadBase);
 
