@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- 
+
 /*=========================================================================
   =                             Includes                                  =
   =========================================================================*/
@@ -518,7 +518,12 @@ omnmmsgFieldPayload_getOpaque (const msgFieldPayload   field,
         return MAMA_STATUS_WRONG_FIELD_TYPE;
     }
 
-    return impl->mParent->getFieldValueAsBuffer (*impl, result);
+    mama_status status = impl->mParent->getFieldValueAsBuffer (*impl, result);
+    if (status == MAMA_STATUS_OK) {
+       *size = impl->mSize;
+    }
+
+    return status;
 }
 
 /*
@@ -594,7 +599,7 @@ omnmmsgFieldPayload_getPrice (const msgFieldPayload   field,
         default:
             return MAMA_STATUS_WRONG_FIELD_TYPE;
             break;
-    }  
+    }
 }
 
 mama_status
@@ -1113,13 +1118,17 @@ omnmmsgFieldPayload_getAsString       (const msgFieldPayload   field,
     {
         const void* result   = NULL;
         mama_size_t dataSize = 0;
-        mama_size_t s        = 0;
-
         status = omnmmsgFieldPayload_getOpaque (field, &result, &dataSize);
 
-        for (s = 0; s < dataSize; s++)
-        {
-            snprintf (buffer, len, "%#x ", ((char*) result)[s]);
+        if (status == MAMA_STATUS_OK) {
+           char* temp = buffer;
+           for (mama_size_t s = 0; s < dataSize; s++)
+           {
+               int i = snprintf (temp, len, "%#x ", ((char*) result)[s]);
+               temp += i;
+               len -= i;
+
+           }
         }
         break;
     }
