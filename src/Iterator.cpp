@@ -99,7 +99,7 @@ omnmmsgPayloadIter_next (msgPayloadIter          iter,
 
     // Set field fid and advance buffer position
     impl->mField.mFid = *((mama_fid_t*) impl->mBufferPosition);
-    impl->mBufferPosition += sizeof(uint16_t);
+    impl->mBufferPosition += sizeof(mama_fid_t);
 
     // If field name is an empty string
     if (*impl->mBufferPosition != '\0')
