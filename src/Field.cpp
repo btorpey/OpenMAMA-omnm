@@ -1119,16 +1119,16 @@ omnmmsgFieldPayload_getAsString       (const msgFieldPayload   field,
         const void* result   = NULL;
         mama_size_t dataSize = 0;
         status = omnmmsgFieldPayload_getOpaque (field, &result, &dataSize);
-
         if (status == MAMA_STATUS_OK) {
+           int l = len;
            char* temp = buffer;
-           for (mama_size_t s = 0; s < dataSize; s++)
+           for (mama_size_t s = 0; (s < dataSize) && (l > 0); s++)
            {
-               int i = snprintf (temp, len, "%#x ", ((char*) result)[s]);
-               temp += i;
-               len -= i;
-
+               int n = snprintf (temp, l, "%#x ", ((char*) result)[s]);
+               temp += n;
+               len -= n;
            }
+           *temp = '\0';
         }
         break;
     }
