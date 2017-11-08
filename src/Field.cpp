@@ -1126,7 +1126,7 @@ omnmmsgFieldPayload_getAsString       (const msgFieldPayload   field,
            {
                int n = snprintf (temp, l, "%#x ", ((char*) result)[s]);
                temp += n;
-               len -= n;
+               l -= n;
            }
            *temp = '\0';
         }
