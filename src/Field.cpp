@@ -1128,7 +1128,10 @@ omnmmsgFieldPayload_getAsString       (const msgFieldPayload   field,
                temp += n;
                l -= n;
            }
-           *temp = '\0';
+           // need trailing null?
+           if (l <= 0) {
+              buffer[len-1] = '\0';
+           }
         }
         break;
     }
