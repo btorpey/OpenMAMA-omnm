@@ -28,7 +28,7 @@ if(WIN32)
     if (CMAKE_BUILD_TYPE MATCHES "Debug")
         set(MAMA_LIB_SUFFIX "mdd")
     else()
-        set(MAMA_LIB_SUFFIX "md")    
+        set(MAMA_LIB_SUFFIX "md")
     endif()
     target_link_libraries(mamaomnmmsgimpl
                           libwombatcommon${MAMA_LIB_SUFFIX}
@@ -43,19 +43,23 @@ if(WIN32)
             DESTINATION bin/dynamic-debug)
 
 elseif(UNIX)
-    add_library(mamaomnmmsgimpl-static
-                STATIC Field.cpp
-                       Iterator.cpp
-                       Iterator.h
-                       omnmmsgpayloadfunctions.h
-                       Payload.cpp
-                       Payload.h)
+   # static linking not supported w/tsan
+   if(NOT "$ENV{BUILD_TYPE}" STREQUAL "tsan")
+       add_library(mamaomnmmsgimpl-static
+                   STATIC Field.cpp
+                          Iterator.cpp
+                          Iterator.h
+                          omnmmsgpayloadfunctions.h
+                          Payload.cpp
+                          Payload.h)
 
-    # Only build the module's unit tests on linux
-    add_executable(unittests UnitTests.cpp)
-    target_link_libraries(unittests gtest mamaomnmmsgimpl-static pthread wombatcommon mama)
-    target_link_libraries(mamaomnmmsgimpl wombatcommon mama)
-    install(TARGETS mamaomnmmsgimpl DESTINATION lib)
-    install(TARGETS unittests DESTINATION bin)
+       # Only build the module's unit tests on linux
+       add_executable(unittests UnitTests.cpp)
+       target_link_libraries(unittests gtest mamaomnmmsgimpl-static pthread wombatcommon mama)
+       install(TARGETS unittests DESTINATION bin)
+   endif()
+
+   target_link_libraries(mamaomnmmsgimpl wombatcommon mama)
+   install(TARGETS mamaomnmmsgimpl DESTINATION lib)
 endif()
 
