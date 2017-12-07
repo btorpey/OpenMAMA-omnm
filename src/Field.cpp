@@ -1119,6 +1119,10 @@ omnmmsgFieldPayload_getAsString       (const msgFieldPayload   field,
         const void* result   = NULL;
         mama_size_t dataSize = 0;
         status = omnmmsgFieldPayload_getOpaque (field, &result, &dataSize);
+        #if 1
+        sprintf(buffer, "{%ld bytes}", dataSize);
+        #else
+        // print the opaque field as a sequence of bytes 0x..
         if (status == MAMA_STATUS_OK) {
            int l = len;
            char* temp = buffer;
@@ -1133,6 +1137,7 @@ omnmmsgFieldPayload_getAsString       (const msgFieldPayload   field,
               buffer[len-1] = '\0';
            }
         }
+        #endif
         break;
     }
     case MAMA_FIELD_TYPE_MSG:

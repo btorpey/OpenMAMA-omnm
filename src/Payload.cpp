@@ -51,7 +51,7 @@
 #define        FIELD_TYPE_WIDTH        1
 #define        FID_WIDTH               2
 #define        LENGTH_WIDTH            4
-#define        DEFAULT_PAYLOAD_SIZE    1024
+#define        DEFAULT_PAYLOAD_SIZE    200
 #define        MAMA_PAYLOAD_ID_OMNM    'O'
 #define        OMNM_PROTOCOL_VERSION   1
 
@@ -486,7 +486,7 @@ OmnmPayloadImpl::updateField (mamaFieldType type, const char* name,
 {
     omnmFieldImpl field;
 
-    if (NULL == buffer || 0 == bufferLen || (NULL == name && 0 == fid))
+    if (NULL == buffer || (NULL == name && 0 == fid))
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -515,7 +515,7 @@ OmnmPayloadImpl::updateField (mamaFieldType type, omnmFieldImpl& field,
 {
     size_t sizeFieldBytes = 0;
 
-    if (NULL == buffer || 0 == bufferLen)
+    if (NULL == buffer)
     {
         return MAMA_STATUS_NULL_ARG;
     }
