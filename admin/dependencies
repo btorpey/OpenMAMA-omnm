@@ -1,0 +1,13 @@
+#!/bin/bash -xv
+
+###############################################################################
+# The immediately following definitions are constant for a particular version
+export PROJECT_NAME=OpenMAMA-omnm
+export PROJECT_VERSION=1.0
+export JIRA_RELEASE=BUS-1781           # release artifact in jira
+
+# internal dependencies
+export OPENMAMA_VERSION=6.2.1
+
+# external dependencies
+export CMAKE_VERSION=2.8.12.2

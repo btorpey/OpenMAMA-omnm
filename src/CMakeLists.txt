@@ -53,10 +53,13 @@ elseif(UNIX)
                           Payload.cpp
                           Payload.h)
 
-       # Only build the module's unit tests on linux
-       add_executable(unittests UnitTests.cpp)
-       target_link_libraries(unittests gtest mamaomnmmsgimpl-static pthread wombatcommon mama)
-       install(TARGETS unittests DESTINATION bin)
+       # Only build the module's unit tests on linux,
+       # and only if GTEST_ROOT is defined (AND we're not building for TSAN)
+       if (GTEST_ROOT)
+          add_executable(unittests UnitTests.cpp)
+          target_link_libraries(unittests gtest mamaomnmmsgimpl-static pthread wombatcommon mama)
+          install(TARGETS unittests DESTINATION bin)
+       endif()
    endif()
 
    target_link_libraries(mamaomnmmsgimpl wombatcommon mama)
