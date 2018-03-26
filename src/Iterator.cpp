@@ -93,6 +93,7 @@ omnmmsgPayloadIter_next (msgPayloadIter          iter,
     impl->mField.mFieldType = (mamaFieldType)(*impl->mBufferPosition);
     impl->mField.mSize      = 0;
     impl->mField.mFid       = 0;
+    impl->mField.mIndex     = impl->mIndex;
 
     // Move past the field type
     impl->mBufferPosition++;
@@ -105,7 +106,7 @@ omnmmsgPayloadIter_next (msgPayloadIter          iter,
     if (*impl->mBufferPosition != '\0')
     {
         impl->mField.mName = (const char*) impl->mBufferPosition;
-        impl->mBufferPosition += strlen(impl->mField.mName) + 1;
+        impl->mBufferPosition += impl->mMsg->mFieldHints[impl->mField.mIndex].nameLen;
     }
     else
     {
@@ -145,14 +146,11 @@ omnmmsgPayloadIter_next (msgPayloadIter          iter,
         impl->mField.mData = (void*) impl->mBufferPosition;
         impl->mField.mSize = sizeof(omnmPrice);
         break;
-    case MAMA_FIELD_TYPE_STRING:
-        impl->mField.mData = (void*) impl->mBufferPosition;
-        impl->mField.mSize = strlen((const char*)impl->mBufferPosition) + 1;
-        break;
     case MAMA_FIELD_TYPE_TIME:
         impl->mField.mData = (void*)impl->mBufferPosition;
         impl->mField.mSize = sizeof(omnmDateTime);
         break;
+    case MAMA_FIELD_TYPE_STRING:
     case MAMA_FIELD_TYPE_MSG:
     case MAMA_FIELD_TYPE_OPAQUE:
     case MAMA_FIELD_TYPE_COLLECTION:
@@ -174,6 +172,7 @@ omnmmsgPayloadIter_next (msgPayloadIter          iter,
     case MAMA_FIELD_TYPE_VECTOR_U8:
         /* All these field types start with a U32 detailing the message size in bytes */
         impl->mField.mSize = *((mama_u32_t*)impl->mBufferPosition);
+
         /* 32 bit field size is variable - skip over its position */
         impl->mBufferPosition += sizeof(mama_u32_t);
         /* Note the data starts *after* the size field */
@@ -183,15 +182,7 @@ omnmmsgPayloadIter_next (msgPayloadIter          iter,
         break;
     }
 
-    if (0 == impl->mIndex)
-    {
-        /* Start iterating just after the message type byte */
-        impl->mBufferPosition = impl->mMsg->mPayloadBuffer + impl->mMsg->getHeaderSize();
-    }
-    else
-    {
-        impl->mBufferPosition += impl->mField.mSize;
-    }
+    impl->mBufferPosition += impl->mField.mSize;
     impl->mIndex++;
 
     return &impl->mField;
@@ -232,6 +223,10 @@ omnmmsgPayloadIter_begin (msgPayloadIter          iter,
     impl->mBufferPosition = impl->mMsg->mPayloadBuffer + impl->mMsg->getHeaderSize();
 
     firstField = omnmmsgPayloadIter_next (iter, field, msg);
+
+    // Reset iterating back to just after the header
+    impl->mIndex = 0;
+    impl->mBufferPosition = impl->mMsg->mPayloadBuffer + impl->mMsg->getHeaderSize();
 
     return firstField;
 }

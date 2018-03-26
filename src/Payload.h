@@ -29,6 +29,8 @@
 #include <mama/price.h>
 #include <wombat/strutils.h>
 
+#include <vector>
+
 class OmnmPayloadImpl;
 
 #define VALIDATE_MAMA_STATUS_OK(STATUS)                                        \
@@ -43,7 +45,7 @@ do                                                                             \
 {                                                                              \
     if (NULL == NAME && 0 == FID)                                              \
         return MAMA_STATUS_NULL_ARG;                                           \
-    else if (0 == strlenEx(NAME) && 0 == FID)                                  \
+    else if (0 == FID && '\0' == *NAME)                                        \
         return MAMA_STATUS_INVALID_ARG;                                        \
 } while (0)
 
@@ -53,6 +55,11 @@ do                                                                             \
     if (NULL == VALUE)                                                         \
         return MAMA_STATUS_NULL_ARG;                                           \
 } while (0)
+
+struct fieldHint {
+   int fieldOffset;     // Offset of field from beginning of message
+   int nameLen;         // Lenght of field name (including \0 terminator)
+};
 
 typedef struct omnmFieldImpl
 {
@@ -74,6 +81,7 @@ typedef struct omnmFieldImpl
     mama_size_t         mVectorDateTimeLen;
     mamaPrice*          mVectorPrice;
     mama_size_t         mVectorPriceLen;
+    int                 mIndex; // Field position from start
 } omnmFieldImpl;
 
 typedef struct omnmDateTime
@@ -110,7 +118,7 @@ typedef omnmHeaderV1 omnmHeader;
 
 class OmnmPayloadImpl {
 public:
-    OmnmPayloadImpl();
+    OmnmPayloadImpl(const size_t bufferSize = 200);
     ~OmnmPayloadImpl();
 
     // Templatized function for casting buffers to data types by lookup
@@ -310,6 +318,9 @@ public:
     static bool
     isFieldTypeFixedWidth (mamaFieldType type);
 
+    static size_t
+    getSizeOfFieldType(mamaFieldType type);
+
     static bool
     areFieldTypesCastable (mamaFieldType from, mamaFieldType to);
 
@@ -355,6 +366,9 @@ public:
 
     // Meta data for the payload
     omnmHeader    mHeader;
+
+    // Offset information for all fields
+    std::vector<fieldHint>   mFieldHints;
 private:
     // Find the field inside the buffer and populate provided field with its
     // location
