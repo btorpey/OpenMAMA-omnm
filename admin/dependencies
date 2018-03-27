@@ -11,3 +11,4 @@ export OPENMAMA_VERSION=6.2.1
 
 # external dependencies
 export CMAKE_VERSION=2.8.12.2
+export GTEST_VERSION=1.8.0

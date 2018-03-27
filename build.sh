@@ -28,9 +28,12 @@ shift $((OPTIND - 1))
 # if build type not specified, assume "dev"
 [[ -z ${BUILD_TYPE} ]] && BUILD_TYPE=dev
 # static linking not supported w/tsan
-#UNITTEST=y;[[ ${BUILD_TYPE} == tsan ]] && UNITTEST=n
+UNITTEST=y;[[ ${BUILD_TYPE} == tsan ]] && UNITTEST=n
 
 setenv
+
+# google test?
+[[ -z "${GTEST_ROOT}" ]] || export GTEST_CMAKE="-DGTEST_ROOT=${GTEST_ROOT}"
 
 # INSTALL_BASE and BUILD_TYPE must be specified (or set in environment)
 [[ -z ${INSTALL_BASE} ]] && echo "No INSTALL_BASE specified" && exit 1
@@ -64,6 +67,7 @@ cd build
 
 # do the build
 cmake  \
+   ${GTEST_CMAKE} \
    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
    -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
    -DMAMA_SRC=${OPENMAMA_SOURCE} -DMAMA_ROOT=${OPENMAMA_INSTALL} \
@@ -71,5 +75,7 @@ cmake  \
 make ${VERBOSE} && make ${VERBOSE} install
 
 # copy source to facilitate debugging
-mkdir -p ${INSTALL_PREFIX}/src
-cp -rp ../src ${INSTALL_PREFIX}/
+if [[ $? -eq 0 ]]; then 
+  mkdir -p ${INSTALL_PREFIX}/src
+  cp -rp ../src ${INSTALL_PREFIX}/
+fi

@@ -3,6 +3,9 @@
 # cmake
 export PATH=/build/share/cmake/${CMAKE_VERSION}/bin:${PATH}
 
+# google test
+export GTEST_ROOT=/build/share/googletest/${GTEST_VERSION}
+
 OPENMAMA_INSTALL=${INSTALL_BASE}/OpenMAMA/${OPENMAMA_VERSION}/${BUILD_TYPE}
 OPENMAMA_SOURCE=${OPENMAMA_INSTALL}/src
 LIBZMQ_INSTALL=${INSTALL_BASE}/libzmq/${LIBZMQ_VERSION}/${BUILD_TYPE}
