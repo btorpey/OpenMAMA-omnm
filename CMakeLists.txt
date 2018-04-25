@@ -4,6 +4,10 @@ project (OpenMAMA-omnm)
 # Note path is relative to where it would be executed
 set(DEFAULT_MAMA_SRC ../../OpenMAMA)
 
+# Transact & BusTalk are not compatible w/C++11 yet
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++98 -D_GLIBCXX_USE_CXX11_ABI=0")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
+
 # enable warnings
 set(WARNFLAGS "${WARNFLAGS} -Wall")
 set(WARNFLAGS "${WARNFLAGS} -Wextra")
