@@ -45,15 +45,6 @@ if [[ ${BUILD_TYPE} == "release" ]] ; then
    CMAKE_BUILD_TYPE="RelWithDebInfo"
 fi
 
-# gcc/clang
-if [[ ${CONFIG} == "clang" ]] ; then
-   export CC=`which clang`
-   export CXX=`which clang++`
-else
-   export CC=`which gcc`
-   export CXX=`which g++`
-fi
-
 # set install location
 INSTALL_PREFIX="${INSTALL_BASE}/${PROJECT_NAME}/${PROJECT_VERSION}${SUFFIX}/${BUILD_TYPE}"
 
@@ -75,7 +66,7 @@ cmake  \
 make ${VERBOSE} && make ${VERBOSE} install
 
 # copy source to facilitate debugging
-if [[ $? -eq 0 ]]; then 
+if [[ $? -eq 0 ]]; then
   mkdir -p ${INSTALL_PREFIX}/src
   cp -rp ../src ${INSTALL_PREFIX}/
 fi
