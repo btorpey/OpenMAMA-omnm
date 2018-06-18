@@ -15,12 +15,9 @@ unset MALLOC_CHECK_
 export INSTALL_BASE=/build/share
 
 # use "nyfix" gcc
-export CC=gcc
-export CXX=g++
-#export GCC_ROOT=/opt/nyfix/gcc/4.3.3
-export GCC_ROOT=/build/share/gcc/4.3.3
-export PATH=${GCC_ROOT}/bin:$PATH
-export LD_LIBRARY_PATH=${GCC_ROOT}/lib64:$LD_LIBRARY_PATH
+export GCC_ROOT=/opt/nyfix/gcc/4.3.3
+export CC=${GCC_ROOT}/bin/gcc
+export CXX=${GCC_ROOT}/bin/g++
 
 # cmake
 export PATH=/build/share/cmake/${CMAKE_VERSION}/bin:$PATH
