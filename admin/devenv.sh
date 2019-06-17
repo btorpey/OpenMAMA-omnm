@@ -5,6 +5,7 @@ source ${SCRIPT_DIR}/dependencies $*
 
 # defaults for dev
 [[ -z ${INSTALL_BASE} ]] && export INSTALL_BASE="${HOME}/install"
+[[ -z ${BUILD_TYPE} ]]   && export BUILD_TYPE="dev"
 
 #################################################################
 # look for files of the form devenv.$user.$host.sh and devenv.$user.sh
