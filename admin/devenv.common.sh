@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# cmake
-export PATH=/build/share/cmake/${CMAKE_VERSION}/bin:${PATH}
-
 # google test
 export GTEST_ROOT=/build/share/googletest/${GTEST_VERSION}
 
