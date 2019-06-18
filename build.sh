@@ -1,43 +1,7 @@
 #!/bin/bash -x
 
-# this is defined as a function just so we can use local variables...
-function setenv {
-   local SCRIPT_DIR=$(cd `dirname $BASH_SOURCE` && pwd)                           # get current directory
-   local BUILD_TYPE_PARAM;
-   [[ -n ${BUILD_TYPE} ]] && BUILD_TYPE_PARAM="-b ${BUILD_TYPE}"
-   local CONFIG_PARAM;
-   [[ -n ${CONFIG} ]]     && CONFIG_PARAM="-c ${CONFIG}"
-   source ${SCRIPT_DIR}/admin/devenv.sh ${BUILD_TYPE_PARAM} ${CONFIG_PARAM}
-}
-
-# get cmd line params
-VERBOSE=""
-SUFFIX=""
-while getopts ':s::b:c:i:v' flag; do
-  case "${flag}" in
-    b) BUILD_TYPE="${OPTARG}"   ; export BUILD_TYPE ;;
-    c) CONFIG="${OPTARG}"       ; export CONFIG ;;
-    i) INSTALL_BASE="${OPTARG}" ; export INSTALL_BASE ;;
-    v) VERBOSE="VERBOSE=1"      ;;
-    s) SUFFIX="${OPTARG}"
-  esac
-done
-shift $((OPTIND - 1))
-# certain build types imply a particular configuration
-[[ ${BUILD_TYPE} == *san ]] && export CONFIG=clang
-# if build type not specified, assume "dev"
-[[ -z ${BUILD_TYPE} ]] && BUILD_TYPE=dev
-# static linking not supported w/tsan
-UNITTEST=y;[[ ${BUILD_TYPE} == tsan ]] && UNITTEST=n
-
-setenv
-
-# google test?
-[[ -z "${GTEST_ROOT}" ]] || export GTEST_CMAKE="-DGTEST_ROOT=${GTEST_ROOT}"
-
-# INSTALL_BASE and BUILD_TYPE must be specified (or set in environment)
-[[ -z ${INSTALL_BASE} ]] && echo "No INSTALL_BASE specified" && exit 1
-[[ -z ${BUILD_TYPE} ]]   && echo "No BUILD_TYPE specified" && exit 1
+SCRIPT_DIR=$(cd $(dirname ${BASH_SOURCE}[0]) && pwd)
+source ${SCRIPT_DIR}/admin/devenv.sh $@
 
 # debug/release
 CMAKE_BUILD_TYPE="Debug"

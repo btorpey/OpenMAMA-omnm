@@ -2,7 +2,6 @@ include_directories(.)
 include_directories(${MAMA_SRC}/mama/c_cpp/src/c)
 include_directories(${MAMA_SRC}/common/c_cpp/src/c)
 include_directories(${MAMA_ROOT}/include)
-include_directories(${GTEST_ROOT}/include)
 
 # Default to installing directly to MAMA directory
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -12,7 +11,6 @@ endif()
 link_directories(${MAMA_ROOT}/lib)
 link_directories(${MAMA_ROOT}/lib/dynamic)
 link_directories(${MAMA_ROOT}/lib/dynamic-debug)
-link_directories(${GTEST_ROOT}/lib)
 
 add_definitions(-DBRIDGE -DMAMA_DLL)
 
@@ -53,12 +51,13 @@ elseif(UNIX)
                           Payload.cpp
                           Payload.h)
 
-       # Only build the module's unit tests on linux,
-       # and only if GTEST_ROOT is defined (AND we're not building for TSAN)
+       # Only build the module's unit tests on linux (AND we're not building for TSAN)
+       add_executable(unittests UnitTests.cpp)
+       target_link_libraries(unittests gtest mamaomnmmsgimpl-static pthread wombatcommon mama)
+       install(TARGETS unittests DESTINATION bin)
        if (GTEST_ROOT)
-          add_executable(unittests UnitTests.cpp)
-          target_link_libraries(unittests gtest mamaomnmmsgimpl-static pthread wombatcommon mama)
-          install(TARGETS unittests DESTINATION bin)
+          include_directories(${GTEST_ROOT}/include)
+          link_directories(${GTEST_ROOT}/lib)
        endif()
    endif()
 
