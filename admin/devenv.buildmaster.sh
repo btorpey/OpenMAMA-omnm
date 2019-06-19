@@ -14,9 +14,20 @@ unset MALLOC_CHECK_
 # standard install location
 export INSTALL_BASE=/build/share
 
-# compiler depends on OS version
+# needs OpenMAMA source files (!?)
+OPENMAMA_INSTALL=${INSTALL_BASE}/OpenMAMA/${OPENMAMA_VERSION}/${BUILD_TYPE}
+OPENMAMA_SOURCE=${OPENMAMA_INSTALL}/src
+LIBZMQ_INSTALL=${INSTALL_BASE}/libzmq/${LIBZMQ_VERSION}/${BUILD_TYPE}
+
+# build depends on OS version
 OS=$(uname -r | sed 's/^.*\(el[0-9]\+\).*$/\1/')
 if [[ "${OS}" == "el5" ]]; then
+   # no gtest on RH5
+   export GOOGLE_TEST=
+
+   # need cmake for RH5
+   export PATH=/build/share/cmake/2.8.12.2/bin:$PATH
+
    # use "nyfix" gcc
    export GCC_ROOT=/opt/nyfix/gcc/4.3.3
    export CC=${GCC_ROOT}/bin/gcc
@@ -26,6 +37,5 @@ else
    export CXX=$(which g++)
 fi
 
-# cmake
-export PATH=/build/share/cmake/${CMAKE_VERSION}/bin:$PATH
-
+# indicate to devenv.sh NOT to source devenv.common.sh
+return 255

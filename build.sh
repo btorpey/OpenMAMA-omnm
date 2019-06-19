@@ -22,15 +22,15 @@ cd build
 
 # do the build
 cmake  \
-   ${GTEST_CMAKE} \
+   ${GOOGLE_TEST} \
    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
    -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
    -DMAMA_SRC=${OPENMAMA_SOURCE} -DMAMA_ROOT=${OPENMAMA_INSTALL} \
    ..
 make ${VERBOSE} && make ${VERBOSE} install
+rc=$?
+[[ $rc -ne 0 ]] && exit $rc
 
 # copy source to facilitate debugging
-if [[ $? -eq 0 ]]; then
-  mkdir -p ${INSTALL_PREFIX}/src
-  cp -rp ../src ${INSTALL_PREFIX}/
-fi
+mkdir -p ${INSTALL_PREFIX}/src
+cp -rp ../src ${INSTALL_PREFIX}/

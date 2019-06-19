@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # google test
-[[ -n ${GTEST_VERSION} ]] && export GTEST_ROOT=/build/share/googletest/${GTEST_VERSION}
+export GOOGLE_TEST="-DGTEST_ROOT="
+[[ -n ${GTEST_VERSION} ]] && export GOOGLE_TEST="-DGTEST_ROOT=/build/share/googletest/${GTEST_VERSION}"
 
 OPENMAMA_INSTALL=${INSTALL_BASE}/OpenMAMA/${OPENMAMA_VERSION}/${BUILD_TYPE}
 OPENMAMA_SOURCE=${OPENMAMA_INSTALL}/src

@@ -7,15 +7,3 @@ export JIRA_RELEASE=BUS-1781           # release artifact in jira
 
 # internal dependencies
 export OPENMAMA_VERSION=6.2.1
-
-###############################################################################
-# if a specific config was specified, source that
-if [[ -n "${CONFIG}" ]]; then
-  FILENAME=$(cd $(dirname ${BASH_SOURCE}[0]) && pwd)/dependencies.${CONFIG}
-  if [[ -f ${FILENAME} ]]; then
-    source ${FILENAME}
-  else
-    echo "${FILENAME} not found!"
-    return 2
-  fi
-fi
