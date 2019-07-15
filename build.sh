@@ -2,6 +2,7 @@
 
 SCRIPT_DIR=$(cd $(dirname ${BASH_SOURCE}[0]) && pwd)
 source ${SCRIPT_DIR}/admin/devenv.sh $@
+[[ ${VERBOSE} == 1 ]] && VPARAM="VERBOSE=1"
 
 # debug/release
 CMAKE_BUILD_TYPE="Debug"
@@ -27,7 +28,7 @@ cmake  \
    -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
    -DMAMA_SRC=${OPENMAMA_SOURCE} -DMAMA_ROOT=${OPENMAMA_INSTALL} \
    ..
-make ${VERBOSE} && make ${VERBOSE} install
+make ${VPARAM} && make ${VPARAM} install
 rc=$?
 [[ $rc -ne 0 ]] && exit $rc
 
