@@ -2,8 +2,8 @@
 
 ###############################################################################
 export PROJECT_NAME=OpenMAMA-omnm
-export PROJECT_VERSION=1.0
+export PROJECT_VERSION=master
 export JIRA_RELEASE=BUS-1781           # release artifact in jira
 
 # internal dependencies
-export OPENMAMA_VERSION=6.2.1
+export OPENMAMA_VERSION=master
