@@ -441,6 +441,8 @@ mama_status
 OmnmPayloadImpl::addField (mamaFieldType type, const char* name, mama_fid_t fid,
         uint8_t* buffer, size_t bufferLen)
 {
+    if (bufferLen > UINT32_MAX) return MAMA_STATUS_INVALID_ARG;
+
     const int nameLen = strlenEx(name) + 1;
 
     fieldHint fieldInfo;
@@ -497,7 +499,8 @@ OmnmPayloadImpl::addField (mamaFieldType type, const char* name, mama_fid_t fid,
     // If a variable width field, buffer will also need copy of size
     if (isFieldTypeSized(type))
     {
-        memcpy ((void*)insertPoint, (void*)&bufferLen, sizeof(mama_u32_t));
+        mama_u32_t len = (mama_u32_t) bufferLen;
+        memcpy ((void*)insertPoint, (void*)&len, sizeof(len));
         insertPoint += sizeof(mama_u32_t);
     }
 
@@ -764,7 +767,6 @@ omnmmsgPayload_toString (const msgPayload msg)
     msgFieldPayload     fieldPayload    = NULL;
     mama_size_t         numFields       = 0;
     mama_size_t         charIdx         = 0; /* Opening Brace */
-    int                 fieldIdx        = 0;
     char                part[1024];
 
     if (NULL == msg) return NULL;
@@ -808,23 +810,20 @@ omnmmsgPayload_toString (const msgPayload msg)
             return NULL;
         }
 
-        if (0 == fieldIdx)
+        if (fid == 0)
         {
-            if (fid == 0)
-            {
-               charIdx += sprintf ((char*)impl->mField.mBuffer + charIdx,
-                                   "%s=%s",
-                                   fname ? fname : "",
-                                   part);
-            }
-            else
-            {
-               charIdx += sprintf ((char*)impl->mField.mBuffer + charIdx,
-                                   "%s[%u]=%s",
-                                   fname ? fname : "",
-                                   fid,
-                                   part);
-            }
+           charIdx += sprintf ((char*)impl->mField.mBuffer + charIdx,
+                               "%s=%s",
+                               fname ? fname : "",
+                               part);
+        }
+        else
+        {
+           charIdx += sprintf ((char*)impl->mField.mBuffer + charIdx,
+                               "%s[%u]=%s",
+                               fname ? fname : "",
+                               fid,
+                               part);
         }
 
         if (omnmmsgPayloadIter_hasNext (iterOpaque, msg))
@@ -833,7 +832,7 @@ omnmmsgPayload_toString (const msgPayload msg)
         }
     }
 
-    charIdx += sprintf((char*)impl->mField.mBuffer + charIdx, "}");
+    sprintf((char*)impl->mField.mBuffer + charIdx, "}");
 
     return (const char*) impl->mField.mBuffer;
 }
@@ -1381,8 +1380,8 @@ omnmmsgPayload_addString (msgPayload  msg,
                           const char* str)
 {
     VALIDATE_NON_NULL(msg);
+    VALIDATE_NON_NULL(str);
     OmnmPayloadImpl* impl = (OmnmPayloadImpl*) msg;
-    if (NULL == impl || NULL == str) return MAMA_STATUS_NULL_ARG;
     return impl->addField (MAMA_FIELD_TYPE_STRING,
                            name,
                            fid,
@@ -1398,8 +1397,8 @@ omnmmsgPayload_addOpaque (msgPayload  msg,
                           mama_size_t size)
 {
     VALIDATE_NON_NULL(msg);
+    VALIDATE_NON_NULL(opaque);
     OmnmPayloadImpl* impl = (OmnmPayloadImpl*) msg;
-    if (NULL == impl || NULL == opaque) return MAMA_STATUS_NULL_ARG;
     return impl->addField (MAMA_FIELD_TYPE_OPAQUE,
                            name,
                            fid,
@@ -1859,11 +1858,13 @@ omnmmsgPayload_updateVectorMsg (msgPayload          msg,
         const void* buffer = NULL;
         mama_size_t bufferLen = 0;
         mamaMsg_getByteBuffer(value[i], &buffer, &bufferLen);
+        if (bufferLen > UINT32_MAX) return MAMA_STATUS_INVALID_ARG;
+        mama_u32_t len = (mama_u32_t) bufferLen;
 
         /* Put size of each message before each message */
-        memcpy((void*)target, &bufferLen, sizeof(mama_u32_t));
+        memcpy((void*)target, &len, sizeof(len));
         target = target + sizeof(mama_u32_t);
-        memcpy((void*)target, buffer, bufferLen);
+        memcpy((void*)target, buffer, len);
         target += bufferLen;
     }
 

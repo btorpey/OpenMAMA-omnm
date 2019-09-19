@@ -61,6 +61,7 @@ omnmmsgPayloadIter_create (msgPayloadIter* iter,
     }
 
     impl = (omnmIterImpl*) calloc (1, sizeof (omnmIterImpl));
+    if (NULL == impl) return MAMA_STATUS_NOMEM;
 
     impl->mField.mParent  = msgImpl;
     impl->mMsg            = msgImpl;
