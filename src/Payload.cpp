@@ -27,6 +27,8 @@
   =========================================================================*/
 
 #include <stdlib.h>
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
