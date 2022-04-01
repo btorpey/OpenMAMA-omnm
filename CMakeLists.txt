@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8.7)
 project (OpenMAMA-omnm)
 
+
 # enable warnings
 set(WARNFLAGS "${WARNFLAGS} -Wall")
 set(WARNFLAGS "${WARNFLAGS} -Wextra")
@@ -36,7 +37,7 @@ endif()
 option(ENABLE_UBSAN "Build with undefined behavior sanitizer" OFF)
 if(ENABLE_UBSAN)
   message(STATUS "Instrumenting with Undefined Behavior Sanitizer")
-  set(CMAKE_BUILD_TYPE "RelWithDebInfo")
+  set(CMAKE_BUILD_TYPE "Debug")
   set(UBSAN_FLAGS "${UBSAN_FLAGS} -fno-omit-frame-pointer")
   set(UBSAN_FLAGS "${UBSAN_FLAGS} -fsanitize=undefined")
   set(UBSAN_FLAGS "${UBSAN_FLAGS} -fsanitize=implicit-conversion")
@@ -59,7 +60,8 @@ if(OPENMAMA_SRC)
     include_directories(${OPENMAMA_SRC}/mama/c_cpp/src/gunittest/c)
     include_directories(${OPENMAMA_SRC}/mama/c_cpp/src/c)
     link_directories(${MAMA_ROOT}/lib)
-    link_directories(${GTEST_ROOT}/lib)
+    include_directories($ENV{GTEST_ROOT}/include)
+    link_directories($ENV{GTEST_ROOT}/lib)
 
     add_executable(UnitTestMamaMsgC
         ${OPENMAMA_SRC}/mama/c_cpp/src/gunittest/c/MainUnitTestC.cpp
