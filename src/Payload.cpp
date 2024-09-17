@@ -444,6 +444,11 @@ OmnmPayloadImpl::addField (mamaFieldType type, const char* name, mama_fid_t fid,
 {
     if (bufferLen > UINT32_MAX) return MAMA_STATUS_INVALID_ARG;
 
+    if (NULL == buffer || 0 == bufferLen || (NULL == name && 0 == fid))
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     const int nameLen = strlenEx(name) + 1;
 
     fieldHint fieldInfo;
@@ -454,11 +459,6 @@ OmnmPayloadImpl::addField (mamaFieldType type, const char* name, mama_fid_t fid,
     // New tail will be comprised of type, fid, field
     size_t newTailOffset = mPayloadBufferTail + FIELD_TYPE_WIDTH + FID_WIDTH +
             nameLen + bufferLen;
-
-    if (NULL == buffer || 0 == bufferLen || (NULL == name && 0 == fid))
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
 
     // If a variable width field, buffer will also contain a size
     if (isFieldTypeSized(type))
@@ -532,12 +532,6 @@ OmnmPayloadImpl::updateField (mamaFieldType type, const char* name,
     if (MAMA_STATUS_OK != status)
     {
         return addField (type, name, fid, buffer, bufferLen);
-    }
-
-    if (field.mFieldType != type &&
-        false == OmnmPayloadImpl::areFieldTypesCastable(field.mFieldType, type))
-    {
-        return MAMA_STATUS_WRONG_FIELD_TYPE;
     }
 
     // If the field exists, try updating it
