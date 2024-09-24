@@ -444,7 +444,7 @@ OmnmPayloadImpl::addField (mamaFieldType type, const char* name, mama_fid_t fid,
 {
     if (bufferLen > UINT32_MAX) return MAMA_STATUS_INVALID_ARG;
 
-    if (NULL == buffer || 0 == bufferLen || (NULL == name && 0 == fid))
+    if (NULL == buffer || (NULL == name && 0 == fid))
     {
         return MAMA_STATUS_NULL_ARG;
     }
